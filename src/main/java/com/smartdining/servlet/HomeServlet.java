@@ -20,21 +20,23 @@ import jakarta.servlet.http.HttpSession;
 public class HomeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private final TableShopService tableShopService = new TableShopServiceImpl();
-    private final ProductDAO productDAO = new ProductDAOImpl();
+    private final transient TableShopService tableShopService = new TableShopServiceImpl();
+    private final transient ProductDAO productDAO = new ProductDAOImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        TableShop table = findRequestedTable(request);
+        String qrToken = request.getParameter("qr");
+        TableShop table = tableShopService.findByQrCodeUrl(qrToken);
         if (table == null || table.getStatus() == TableStatus.INACTIVE) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "So ban hoac ma QR khong hop le");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Ma QR khong hop le");
             return;
         }
 
         HttpSession session = request.getSession(true);
         session.setAttribute("currentTableId", table.getId());
         request.setAttribute("currentTableId", table.getId());
+        request.setAttribute("currentTableQr", qrToken);
 
         request.setAttribute("products", productDAO.findAll().stream()
                 .filter(product -> product.getStatus() == ProductStatus.AVAILABLE)
@@ -42,19 +44,6 @@ public class HomeServlet extends HttpServlet {
         com.smartdining.dao.CategoryDAO categoryDAO = new com.smartdining.dao.impl.CategoryDAOImpl();
         request.setAttribute("categories", categoryDAO.findAll());
         request.getRequestDispatcher("/index.jsp").forward(request, response);
-    }
-
-    private TableShop findRequestedTable(HttpServletRequest request) {
-        String tableIdValue = request.getParameter("tableId");
-        if (tableIdValue != null && !tableIdValue.isBlank()) {
-            try {
-                int tableId = Integer.parseInt(tableIdValue);
-                return tableId > 0 ? tableShopService.findById(tableId) : null;
-            } catch (NumberFormatException ex) {
-                return null;
-            }
-        }
-        return tableShopService.findByQrCodeUrl(request.getParameter("qr"));
     }
 
     @Override

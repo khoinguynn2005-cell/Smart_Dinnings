@@ -7,7 +7,7 @@ let projectedTotal = 0;
 let customerSocket;
 let customerToastTimer;
 
-const orderApiUrl = (path) => `${contextPath}/api/order/${path}?tableId=${encodeURIComponent(customerTableId)}`;
+const orderApiUrl = (path) => `${contextPath}/api/order/${path}`;
 
 const formatPrice = (price) => `${new Intl.NumberFormat('vi-VN', {
     maximumFractionDigits: 0
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function connectCustomerWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
     customerSocket = new WebSocket(protocol + window.location.host + contextPath
-        + '/ws/customer?tableId=' + encodeURIComponent(customerTableId));
+        + '/ws/customer?qr=' + encodeURIComponent(customerQrToken));
 
     customerSocket.onmessage = (event) => {
         try {

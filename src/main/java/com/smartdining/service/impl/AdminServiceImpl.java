@@ -1,6 +1,7 @@
 package com.smartdining.service.impl;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Base64;
 import java.util.Map;
 
 import com.smartdining.entity.Category;
@@ -28,7 +30,6 @@ import com.smartdining.enums.ProductStatus;
 import com.smartdining.enums.TableRequestStatus;
 import com.smartdining.enums.TableStatus;
 import com.smartdining.service.AdminService;
-import com.smartdining.utils.BugLog;
 import com.smartdining.utils.JpaUtil;
 import com.smartdining.utils.PasswordUtil;
 import com.smartdining.utils.VerificationCodeUtil;
@@ -37,6 +38,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
 public class AdminServiceImpl implements AdminService {
+    private static final SecureRandom QR_RANDOM = new SecureRandom();
     @Override
     public AdminOverview getOverview() {
         EntityManager em = JpaUtil.getEntityManager();
@@ -295,12 +297,9 @@ public class AdminServiceImpl implements AdminService {
             TableShop table = new TableShop();
             table.setTableName(normalizedName);
             table.setStatus(TableStatus.AVAILABLE);
+            table.setQrCodeUrl(newQrToken());
             em.persist(table);
-            em.flush();
-            table.setQrCodeUrl("/home/index?tableId=" + table.getId());
             transaction.commit();
-            BugLog.warn(5, "Ban moi \"" + normalizedName + "\" co ma QR " + table.getQrCodeUrl()
-                    + " - chi la so ban, ai cung doan duoc de goi mon cho ban khac.");
             return table;
         } catch (Exception ex) {
             rollback(transaction);
@@ -308,6 +307,13 @@ public class AdminServiceImpl implements AdminService {
         } finally {
             em.close();
         }
+    }
+
+    /** Ma QR la chuoi ngau nhien 192-bit, khong doan duoc tu so ban. */
+    private static String newQrToken() {
+        byte[] bytes = new byte[24];
+        QR_RANDOM.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
     @Override

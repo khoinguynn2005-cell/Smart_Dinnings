@@ -13,10 +13,7 @@ import com.smartdining.entity.Order;
 import com.smartdining.entity.OrderDetail;
 import com.smartdining.enums.OrderDetailStatus;
 import com.smartdining.service.OrderService;
-import com.smartdining.service.TableShopService;
 import com.smartdining.service.impl.OrderServiceImpl;
-import com.smartdining.service.impl.TableShopServiceImpl;
-import com.smartdining.utils.BugLog;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,7 +25,6 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/api/order/*")
 public class CustomerOrderServlet extends HttpServlet {
     private final OrderService orderService = new OrderServiceImpl();
-    private final TableShopService tableShopService = new TableShopServiceImpl();
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
@@ -166,29 +162,7 @@ public class CustomerOrderServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        String requestedTableId = request.getParameter("tableId");
-        if (requestedTableId != null && !requestedTableId.isBlank()) {
-            try {
-                int tableId = Integer.parseInt(requestedTableId);
-                if (tableId > 0 && tableShopService.findById(tableId) != null) {
-                    HttpSession session = request.getSession(false);
-                    Object scannedTable = session == null ? null : session.getAttribute("currentTableId");
-                    if (!Integer.valueOf(tableId).equals(scannedTable)) {
-                        BugLog.warn(5, request.getMethod() + " " + request.getRequestURI() + "?tableId=" + tableId
-                                + " tu " + request.getRemoteAddr() + " duoc chap nhan du "
-                                + (scannedTable == null ? "CHUA quet QR ban nao" : "dang ngoi ban " + scannedTable)
-                                + " - chi can doi tableId tren URL.");
-                    }
-                    return tableId;
-                }
-            } catch (NumberFormatException ignored) {
-                // Return the standard invalid-table response below.
-            }
-            writeJson(response, HttpServletResponse.SC_NOT_FOUND,
-                    Map.of("status", "error", "message", "So ban khong hop le"));
-            return null;
-        }
-
+        // Ban duoc lay tu phien da quet QR (HomeServlet), khong nhan tu tham so tren URL.
         HttpSession session = request.getSession(false);
         Object tableId = session == null ? null : session.getAttribute("currentTableId");
         if (!(tableId instanceof Integer)) {

@@ -323,7 +323,7 @@ function renderTables() {
         return;
     }
     container.innerHTML = state.tables.map((table) => {
-        const link = customerTableUrl(table.id);
+        const link = customerTableUrl(table);
         const editable = table.status === 'AVAILABLE' || table.status === 'INACTIVE';
         const inactive = table.status === 'INACTIVE';
         const lifecycleAction = inactive
@@ -550,7 +550,7 @@ function handleTableAction(event) {
         openTableModal(table);
         return;
     }
-    const link = customerTableUrl(table.id);
+    const link = customerTableUrl(table);
     if (button.dataset.tableAction === 'copy') {
         navigator.clipboard?.writeText(link).then(() => showToast('Đã sao chép đường dẫn khách.')).catch(() => showToast('Không thể sao chép đường dẫn.', true));
         return;
@@ -611,8 +611,8 @@ function closeModal(id) {
     if (id === 'confirmModal') confirmAction = null;
 }
 
-function customerTableUrl(tableId) {
-    return `${window.location.origin}${contextPath}/home/index?tableId=${encodeURIComponent(tableId)}`;
+function customerTableUrl(table) {
+    return `${window.location.origin}${contextPath}/home/index?qr=${encodeURIComponent(table.qrCodeUrl || '')}`;
 }
 
 function statusClass(status) {

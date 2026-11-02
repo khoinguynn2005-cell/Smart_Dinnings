@@ -195,6 +195,7 @@
     <script>
         const contextPath = "${pageContext.request.contextPath}";
         const customerTableId = Number("${currentTableId}");
+        const customerQrToken = "${currentTableQr}";
     </script>
     <script src="${pageContext.request.contextPath}/js/main.js?v=20261012-2"></script>
 </body>
