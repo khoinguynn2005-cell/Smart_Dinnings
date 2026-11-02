@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class EmployeeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private final EmployeeService employeeService = new EmployeeServiceImpl();
+    private final transient EmployeeService employeeService = new EmployeeServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

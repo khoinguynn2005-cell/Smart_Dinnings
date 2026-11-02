@@ -15,24 +15,24 @@ public class XHttp {
 	private static Map<Long, ServletResponse> responses = new ConcurrentHashMap<>();
 
 	public static void  add(ServletRequest request, ServletResponse response) {
-		var key = Thread.currentThread().getId();
+		var key = Thread.currentThread().threadId();
 		requests.put( key, request);
 		responses.put(key, response);
 	}
 	
 	public static void remove() {
-		var key = Thread.currentThread().getId();
+		var key = Thread.currentThread().threadId();
 		requests.remove(key);
 		responses.remove(key);
 	}
 	
 	public static HttpServletRequest getRequest() {
-		var key = Thread.currentThread().getId();
+		var key = Thread.currentThread().threadId();
 		return (HttpServletRequest) requests.get(key);
 	}
 	
 	public static HttpServletResponse getResponse() {
-		var key = Thread.currentThread().getId();
+		var key = Thread.currentThread().threadId();
 		return (HttpServletResponse) responses.get(key);
 	}
 	
