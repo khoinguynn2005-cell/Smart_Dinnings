@@ -1,6 +1,8 @@
 package com.smartdining.servlet;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,7 +12,6 @@ import com.smartdining.entity.Employee;
 import com.smartdining.enums.EmployeeRole;
 import com.smartdining.enums.EmployeeStatus;
 import com.smartdining.enums.WebSocketEvent;
-import com.smartdining.utils.BugLog;
 import com.smartdining.utils.PasswordUtil;
 import com.smartdining.utils.SecurityUtil;
 import com.smartdining.utils.VerificationCodeUtil;
@@ -31,9 +32,10 @@ public class LoginServlet extends HttpServlet {
     private static final String VERIFY_PATH = "/verify";
     private static final String RESEND_PATH = "/verify/resend";
 
-    /** Chi de ghi log BUG-7: so lan dang nhap sai lien tiep theo ten dang nhap. */
-    private static final Map<String, Integer> FAILED_LOGINS = new ConcurrentHashMap<>();
-    private static final int FAILED_LOGIN_WARNING = 5;
+    /** Sau bao nhieu lan sai lien tiep thi khoa dang nhap theo ten dang nhap trong LOGIN_LOCK. */
+    private static final int MAX_FAILED_LOGINS = 5;
+    private static final Duration LOGIN_LOCK = Duration.ofMinutes(15);
+    private static final Map<String, LoginAttempts> LOGIN_ATTEMPTS = new ConcurrentHashMap<>();
 
     private final EmployeeDAO employeeDAO = new EmployeeDAOImpl();
 
@@ -77,22 +79,21 @@ public class LoginServlet extends HttpServlet {
         }
 
         EmployeeRole loginRole = requestedLoginRole(request);
-        Employee employee = employeeDAO.findByUsername(request.getParameter("username"));
+        String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String username = String.valueOf(request.getParameter("username"));
+        String throttleKey = username == null ? "" : username.trim().toLowerCase();
+
+        if (isLocked(throttleKey)) {
+            request.setAttribute("error", "Dang nhap sai qua nhieu lan. Vui long thu lai sau "
+                    + LOGIN_LOCK.toMinutes() + " phut.");
+            forwardLogin(request, response, loginRole);
+            return;
+        }
+
+        Employee employee = employeeDAO.findByUsername(username);
         boolean passwordMatches = employee != null && PasswordUtil.matches(password, employee.getPassword());
         if (!passwordMatches) {
-            int failures = FAILED_LOGINS.merge(username.toLowerCase(), 1, Integer::sum);
-            if (failures >= FAILED_LOGIN_WARNING) {
-                BugLog.warn(7, "Tai khoan \"" + username + "\" da dang nhap sai " + failures + " lan lien tiep tu "
-                        + request.getRemoteAddr() + " nhung KHONG bi chan hay khoa tam.");
-            }
-        } else {
-            FAILED_LOGINS.remove(username.toLowerCase());
-            if (password.equals(employee.getPassword())) {
-                BugLog.warn(6, "Tai khoan \"" + username + "\" vua dang nhap: mat khau trong DB (Employees.Password)"
-                        + " dang luu NGUYEN VAN, khong ma hoa.");
-            }
+            recordFailedLogin(throttleKey);
         }
         if (employee == null || (loginRole != null && employee.getRole() != loginRole)) {
             request.setAttribute("error", loginRole == null
@@ -106,12 +107,17 @@ public class LoginServlet extends HttpServlet {
             forwardLogin(request, response, loginRole);
             return;
         }
-
-        boolean authenticated = PasswordUtil.matches(password, employee.getPassword());
-        if (!authenticated) {
+        if (!passwordMatches) {
             request.setAttribute("error", "Sai ten dang nhap hoac mat khau.");
             forwardLogin(request, response, loginRole);
             return;
+        }
+
+        LOGIN_ATTEMPTS.remove(throttleKey);
+        if (PasswordUtil.needsRehash(employee.getPassword())) {
+            // Mat khau con luu dang chu thuong: ma hoa lai ngay sau lan dang nhap dung dau tien.
+            employee.setPassword(PasswordUtil.forStorage(password));
+            employeeDAO.update(employee);
         }
 
         if (employee.getStatus() == EmployeeStatus.PENDING) {
@@ -121,6 +127,29 @@ public class LoginServlet extends HttpServlet {
 
         SecurityUtil.signIn(request, response, employee);
         redirectToWorkspace(request, response, employee);
+    }
+
+    private static boolean isLocked(String throttleKey) {
+        LoginAttempts attempts = LOGIN_ATTEMPTS.get(throttleKey);
+        if (attempts == null || attempts.lockedUntil() == null) {
+            return false;
+        }
+        if (Instant.now().isBefore(attempts.lockedUntil())) {
+            return true;
+        }
+        LOGIN_ATTEMPTS.remove(throttleKey, attempts);
+        return false;
+    }
+
+    private static void recordFailedLogin(String throttleKey) {
+        LOGIN_ATTEMPTS.compute(throttleKey, (key, attempts) -> {
+            int failures = attempts == null ? 1 : attempts.failures() + 1;
+            Instant lockedUntil = failures >= MAX_FAILED_LOGINS ? Instant.now().plus(LOGIN_LOCK) : null;
+            return new LoginAttempts(failures, lockedUntil);
+        });
+    }
+
+    private record LoginAttempts(int failures, Instant lockedUntil) {
     }
 
     /** Lan dau dang nhap: dung mat khau nhung chua xac thuc email -> chuyen sang buoc nhap ma. */
