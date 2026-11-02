@@ -31,6 +31,7 @@ import com.smartdining.websocket.StaffWebSocketServer;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.LockModeType;
 
 public class StaffServiceImpl implements StaffService {
     @Override
@@ -230,6 +231,12 @@ public class StaffServiceImpl implements StaffService {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
+            // Khoa dong ban: hai yeu cau thanh toan cung luc chi duoc ghi MOT Payment.
+            TableShop lockedTable = em.find(TableShop.class, tableId, LockModeType.PESSIMISTIC_WRITE);
+            if (lockedTable == null) {
+                rollback(transaction);
+                return CheckoutResult.NO_OPEN_ORDER;
+            }
             Order order = findOpenOrder(em, tableId);
             Employee employee = employeeId == null ? null : em.find(Employee.class, employeeId);
             if (order == null || employee == null) {
@@ -276,31 +283,12 @@ public class StaffServiceImpl implements StaffService {
             em.persist(payment);
             transaction.commit();
 
-            long payments = countPayments(order.getId());
-            if (payments > 1) {
-                BugLog.warn(3, "Hoa don " + order.getId() + " (ban " + tableId + ") da duoc thanh toan " + payments
-                        + " lan, bang Payments co " + payments + " dong. Lan nay do nhan vien " + employeeId + " thu "
-                        + bill.total() + " (" + method + ").");
-            }
-
             broadcastOrderPaid(tableId);
             return CheckoutResult.OK;
         } catch (Exception ex) {
             rollback(transaction);
             BugLog.swallowed("Thanh toan ban " + tableId, ex);
             return CheckoutResult.ERROR;
-        } finally {
-            em.close();
-        }
-    }
-
-    /** Chi de ghi log BUG-3: so lan thanh toan da ghi cho mot hoa don. */
-    private long countPayments(String orderId) {
-        EntityManager em = JpaUtil.getEntityManager();
-        try {
-            return em.createQuery("SELECT COUNT(p) FROM Payment p WHERE p.order.id = :orderId", Long.class)
-                    .setParameter("orderId", orderId)
-                    .getSingleResult();
         } finally {
             em.close();
         }

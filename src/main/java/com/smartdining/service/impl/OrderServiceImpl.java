@@ -31,10 +31,9 @@ import com.smartdining.websocket.StaffWebSocketServer;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.LockModeType;
 
 public class OrderServiceImpl implements OrderService {
-    /** Chi de ghi log BUG-2: cac mon da tung duoc gui bep (trong lan chay Tomcat nay). */
-    private static final Set<String> CONFIRMED_DETAIL_IDS = ConcurrentHashMap.newKeySet();
 
     @Override
     public boolean create(Order order) {
@@ -93,15 +92,16 @@ public class OrderServiceImpl implements OrderService {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
+            // Khoa dong ban truoc khi kiem tra hoa don: cac yeu cau cung ban phai chay lan luot,
+            // nen khong con hai yeu cau cung tao hai hoa don mo cho mot ban.
+            TableShop table = lockTable(em, tableId);
+            if (table == null || table.getStatus() == TableStatus.INACTIVE) {
+                rollback(transaction);
+                return false;
+            }
             Order order = findActiveOrder(em, tableId);
             boolean tableBecameOccupied = false;
-            boolean createdOrder = order == null;
             if (order == null) {
-                TableShop table = em.find(TableShop.class, tableId);
-                if (table == null || table.getStatus() == TableStatus.INACTIVE) {
-                    rollback(transaction);
-                    return false;
-                }
                 order = new Order();
                 prepareNewOrder(order, table);
                 tableBecameOccupied = table.getStatus() == TableStatus.AVAILABLE;
@@ -127,14 +127,6 @@ public class OrderServiceImpl implements OrderService {
             detail.setStatus(OrderDetailStatus.CART);
             em.persist(detail);
             transaction.commit();
-
-            if (createdOrder) {
-                long openOrders = countOpenOrders(tableId);
-                if (openOrders > 1) {
-                    BugLog.warn(1, "Ban " + tableId + " co " + openOrders
-                            + " hoa don dang mo cung luc (nhieu khach them mon cung luc). Mon o cac hoa don cu se bi ket.");
-                }
-            }
 
             Map<String, Object> payload = new HashMap<>();
             payload.put("status", WebSocketEvent.CART_UPDATED.name());
@@ -166,6 +158,10 @@ public class OrderServiceImpl implements OrderService {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
+            if (lockTable(em, tableId) == null) {
+                rollback(transaction);
+                return false;
+            }
             OrderDetail detail = em.find(OrderDetail.class, orderDetailId);
             if (detail == null || detail.getStatus() != OrderDetailStatus.CART || detail.getOrder() == null
                     || detail.getOrder().getTable() == null
@@ -221,6 +217,10 @@ public class OrderServiceImpl implements OrderService {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
+            if (lockTable(em, tableId) == null) {
+                rollback(transaction);
+                return false;
+            }
             OrderDetail detail = em.find(OrderDetail.class, orderDetailId);
             // Chi sua duoc mon chua gui bep va thuoc dung ban dang goi
             if (detail == null || detail.getStatus() != OrderDetailStatus.CART || detail.getOrder() == null
@@ -256,6 +256,11 @@ public class OrderServiceImpl implements OrderService {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
+            // Khoa dong ban: hai lan bam "Gui bep" cung luc khong duoc cung cong tien hai lan.
+            if (lockTable(em, tableId) == null) {
+                rollback(transaction);
+                return false;
+            }
             Order order = findActiveOrder(em, tableId);
             if (order == null) {
                 rollback(transaction);
@@ -302,18 +307,6 @@ public class OrderServiceImpl implements OrderService {
                     .setParameter("status", TableRequestStatus.PENDING)
                     .executeUpdate() > 0;
             transaction.commit();
-
-            int duplicated = 0;
-            for (Map<String, Object> item : kitchenItems) {
-                if (!CONFIRMED_DETAIL_IDS.add((String) item.get("id"))) {
-                    duplicated++;
-                }
-            }
-            if (duplicated > 0) {
-                BugLog.warn(2, "Ban " + tableId + ": " + duplicated + " mon da gui bep ROI van duoc gui them lan nua"
-                        + " (bam Gui bep cung luc). Tong tien hoa don " + order.getId() + " bi cong trung, hien la "
-                        + order.getTotalAmount());
-            }
 
             Map<String, Object> payload = new HashMap<>();
             payload.put("status", WebSocketEvent.NEW_ORDER.name());
@@ -379,6 +372,10 @@ public class OrderServiceImpl implements OrderService {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
+            if (lockTable(em, tableId) == null) {
+                rollback(transaction);
+                return false;
+            }
             Order order = findActiveOrder(em, tableId);
             if (order == null || order.getTable() == null) {
                 rollback(transaction);
@@ -454,18 +451,9 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    /** Chi de ghi log BUG-1: dem hoa don UNPAID cua ban sau khi giao dich da commit. */
-    private long countOpenOrders(Integer tableId) {
-        EntityManager em = JpaUtil.getEntityManager();
-        try {
-            return em.createQuery("SELECT COUNT(o) FROM Order o WHERE o.table.id = :tableId AND o.status = :status",
-                    Long.class)
-                    .setParameter("tableId", tableId)
-                    .setParameter("status", OrderStatus.UNPAID)
-                    .getSingleResult();
-        } finally {
-            em.close();
-        }
+    /** Khoa pessimistic (UPDLOCK) tren dong ban; giu den khi transaction ket thuc. */
+    private static TableShop lockTable(EntityManager em, Integer tableId) {
+        return em.find(TableShop.class, tableId, LockModeType.PESSIMISTIC_WRITE);
     }
 
     private Order findActiveOrder(EntityManager em, Integer tableId) {
