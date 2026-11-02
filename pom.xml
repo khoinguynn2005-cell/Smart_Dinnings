@@ -1,0 +1,151 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>SmartDining</groupId>
+  <artifactId>SmartDining</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <properties>
+    <!-- Bo test mac dinh; chay bo kiem chung loi: mvn test -Dtestng.suite=testng-bugs.xml -->
+    <testng.suite>testng.xml</testng.suite>
+  </properties>
+
+  <dependencies>
+    <!-- JPA -->
+    <dependency>
+        <groupId>jakarta.persistence</groupId>
+        <artifactId>jakarta.persistence-api</artifactId>
+        <version>3.1.0</version>
+    </dependency>
+
+    <!-- Hibernate -->
+    <dependency>
+        <groupId>org.hibernate.orm</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>6.4.4.Final</version>
+    </dependency>
+
+    <!-- SQL Server -->
+    <dependency>
+        <groupId>com.microsoft.sqlserver</groupId>
+        <artifactId>mssql-jdbc</artifactId>
+        <version>13.6.0.jre11</version>
+    </dependency>
+    
+	<!-- Servlet API (Tomcat cung cap san) -->
+	<dependency>
+	    <groupId>jakarta.servlet</groupId>
+	    <artifactId>jakarta.servlet-api</artifactId>
+	    <version>6.0.0</version>
+	    <scope>provided</scope>
+	</dependency>
+
+	<!-- JSTL API -->
+	<dependency>
+	    <groupId>jakarta.servlet.jsp.jstl</groupId>
+	    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+	    <version>3.0.2</version>
+	    <exclusions>
+	        <exclusion>
+	            <groupId>jakarta.servlet</groupId>
+	            <artifactId>jakarta.servlet-api</artifactId>
+	        </exclusion>
+	        <exclusion>
+	            <groupId>jakarta.el</groupId>
+	            <artifactId>jakarta.el-api</artifactId>
+	        </exclusion>
+	    </exclusions>
+	</dependency>
+	
+	<!-- JSTL Implementation -->
+	<dependency>
+	    <groupId>org.glassfish.web</groupId>
+	    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+	    <version>3.0.1</version>
+	</dependency>
+	
+	<!-- Web-Socket -->
+	<dependency>
+		<groupId>jakarta.websocket</groupId>
+	    <artifactId>jakarta.websocket-api</artifactId>
+	    <version>2.1.1</version>
+	    <scope>provided</scope>
+	</dependency>
+
+	<dependency>
+		<groupId>jakarta.websocket</groupId>
+		<artifactId>jakarta.websocket-client-api</artifactId>
+		<version>2.1.1</version>
+		<scope>provided</scope>
+	</dependency>
+
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.22.3</version>
+    </dependency>
+
+    
+    <!-- Mail -->
+    <dependency>
+		<groupId>org.eclipse.angus</groupId>
+		<artifactId>angus-mail</artifactId>
+		<version>2.0.5</version>
+	</dependency>
+
+    <!-- Kiem thu giao dien: TestNG + Selenium -->
+    <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>7.10.2</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>4.27.0</version>
+        <scope>test</scope>
+    </dependency>
+
+</dependencies>
+  
+  <build>
+    <finalName>SmartDining</finalName>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>META-INF/persistence.xml</include>
+          <include>META-INF/config.properties</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <release>21</release>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>${testng.suite}</suiteXmlFile>
+          </suiteXmlFiles>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.2.3</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

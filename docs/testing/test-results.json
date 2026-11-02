@@ -1,0 +1,1122 @@
+{
+  "runAt": "2026-10-12T11:09:00.403Z",
+  "baseUrl": "http://localhost:8081/SmartDining",
+  "results": [
+    {
+      "id": "TC-AUTH-01",
+      "module": "Xác thực",
+      "title": "Truy cập trang gốc chuyển về trang đăng nhập",
+      "data": "GET /",
+      "expected": "302 -> /SmartDining/login",
+      "actual": "HTTP 302 -> /SmartDining/login",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-02",
+      "module": "Xác thực",
+      "title": "Truy cập thẳng index.jsp chuyển về đăng nhập",
+      "data": "GET /index.jsp",
+      "expected": "302 -> /SmartDining/login",
+      "actual": "HTTP 302 -> /SmartDining/login",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-03",
+      "module": "Xác thực",
+      "title": "Trang đăng nhập hiển thị hướng dẫn cho khách và nhân viên",
+      "data": "GET /login",
+      "expected": "200, có \"quét mã QR\" và \"Nhân viên\"",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-04",
+      "module": "Xác thực",
+      "title": "Đăng nhập admin đúng tài khoản",
+      "data": "admin / (mật khẩu đúng)",
+      "expected": "302 -> /admin/dashboard",
+      "actual": "HTTP 302 -> /SmartDining/admin/dashboard",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-05",
+      "module": "Xác thực",
+      "title": "Đăng nhập staff đúng tài khoản",
+      "data": "staff1 / (mật khẩu đúng)",
+      "expected": "302 -> /staff/dashboard",
+      "actual": "HTTP 302 -> /SmartDining/staff/dashboard",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-06",
+      "module": "Xác thực",
+      "title": "Đăng nhập kitchen đúng tài khoản",
+      "data": "kitchen1 / (mật khẩu đúng)",
+      "expected": "302 -> /kitchen/dashboard",
+      "actual": "HTTP 302 -> /SmartDining/kitchen/dashboard",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-07",
+      "module": "Xác thực",
+      "title": "Đăng nhập sai mật khẩu",
+      "data": "staff1 / sai-mat-khau",
+      "expected": "200, báo \"Sai ten dang nhap hoac mat khau\"",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-08",
+      "module": "Xác thực",
+      "title": "Đăng nhập tài khoản không tồn tại",
+      "data": "khong-ton-tai / abc12345",
+      "expected": "200, báo lỗi",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-09",
+      "module": "Xác thực",
+      "title": "Đăng nhập tài khoản đã bị khóa (INACTIVE)",
+      "data": "staff2 / 1234",
+      "expected": "200, báo \"Tai khoan cua ban da bi khoa\"",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-10",
+      "module": "Xác thực",
+      "title": "Đăng nhập sai khu vực (staff vào cổng bếp)",
+      "data": "staff1 tại /login/kitchen",
+      "expected": "200, báo \"Tai khoan khong thuoc khu vuc\"",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PQ-01",
+      "module": "Phân quyền",
+      "title": "Chưa đăng nhập vào trang admin",
+      "data": "GET /admin/dashboard",
+      "expected": "302 -> /login",
+      "actual": "HTTP 302 -> /SmartDining/login",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PQ-02",
+      "module": "Phân quyền",
+      "title": "Nhân viên phục vụ gọi API admin",
+      "data": "staff1: GET /api/admin/overview",
+      "expected": "403",
+      "actual": "HTTP 403",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PQ-03",
+      "module": "Phân quyền",
+      "title": "Nhân viên bếp gọi API phục vụ",
+      "data": "kitchen1: GET /api/staff/tables",
+      "expected": "403",
+      "actual": "HTTP 403",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PQ-04",
+      "module": "Phân quyền",
+      "title": "Khách chưa đăng nhập gọi API bếp",
+      "data": "POST /api/kitchen/update-status",
+      "expected": "403",
+      "actual": "HTTP 403",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PQ-05",
+      "module": "Phân quyền",
+      "title": "Admin được xem màn hình bếp",
+      "data": "admin: GET /api/kitchen/tasks",
+      "expected": "200",
+      "actual": "HTTP 200 {\"status\":\"success\",\"data\":[{\"note\":\"Siêu cạy\",\"orderType\":\"DINE_IN\",\"groupName\":\"Bàn 03\",\"pickupTime\":null,\"quantity\":2,\"tableId\":3,\"create",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-01",
+      "module": "Real-time",
+      "title": "Khách chưa đăng nhập không kết nối được kênh admin",
+      "data": "WebSocket /ws/admin, không cookie",
+      "expected": "Server đóng kết nối",
+      "actual": "closed=true",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-02",
+      "module": "Real-time",
+      "title": "Nhân viên phục vụ không kết nối được kênh admin",
+      "data": "WebSocket /ws/admin, cookie staff1",
+      "expected": "Server đóng kết nối",
+      "actual": "closed=true",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-03",
+      "module": "Real-time",
+      "title": "Admin kết nối được kênh admin",
+      "data": "WebSocket /ws/admin, cookie admin",
+      "expected": "Kết nối mở và giữ nguyên",
+      "actual": "opened=true closed=false",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-01",
+      "module": "Quản trị",
+      "title": "Thêm danh mục mới",
+      "data": "name=\"QA Danh mục 330365\"",
+      "expected": "200, trả về id",
+      "actual": "HTTP 200 {\"data\":{\"name\":\"QA Danh mục 330365\",\"id\":26}}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-02",
+      "module": "Quản trị",
+      "title": "Thêm danh mục trùng tên",
+      "data": "name=\"QA Danh mục 330365\" (lần 2)",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Tên danh mục không hợp lệ hoặc đã tồn tại.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-03",
+      "module": "Quản trị",
+      "title": "Thêm danh mục tên rỗng",
+      "data": "name=\"   \"",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Tên danh mục không hợp lệ hoặc đã tồn tại.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-04",
+      "module": "Quản trị",
+      "title": "Thêm món ăn hợp lệ",
+      "data": "{\"name\":\"QA Món 330365\",\"categoryId\":3,\"price\":50000,\"imageUrl\":\"\",\"description\":\"Món dùng để test\",\"status\":\"AVAILABLE\"}",
+      "expected": "200, trả về id món",
+      "actual": "HTTP 200 {\"data\":{\"id\":\"P042\",\"name\":\"QA Món 330365\",\"categoryId\":3,\"categoryName\":\"Đồ Uống\",\"price\":50000,\"imageUrl\":null,\"description\":\"Món dùng để",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-05",
+      "module": "Quản trị",
+      "title": "Thêm món ăn thiếu tên",
+      "data": "name=\"\"",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Không thể lưu món ăn.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-06",
+      "module": "Quản trị",
+      "title": "Thêm món ăn giá âm",
+      "data": "price=-1000",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Không thể lưu món ăn.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-07",
+      "module": "Quản trị",
+      "title": "Sửa giá món ăn",
+      "data": "id=P042, price=55000",
+      "expected": "200, price=55000",
+      "actual": "HTTP 200 {\"data\":{\"id\":\"P042\",\"name\":\"QA Món 330365\",\"categoryId\":3,\"categoryName\":\"Đồ Uống\",\"price\":55000,\"imageUrl\":null,\"description\":\"Món dùng để",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-08",
+      "module": "Quản trị",
+      "title": "Xóa danh mục đang có món",
+      "data": "categoryId=3 (Đồ Uống)",
+      "expected": "400 \"Chỉ được xóa danh mục chưa có món ăn\"",
+      "actual": "HTTP 400 {\"message\":\"Chỉ được xóa danh mục chưa có món ăn.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-16",
+      "module": "Quản trị",
+      "title": "Xóa danh mục chưa có món",
+      "data": "categoryId=26 (\"QA Danh mục 330365\")",
+      "expected": "200 deleted",
+      "actual": "HTTP 200 {\"data\":{\"deleted\":true}}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-09",
+      "module": "Quản trị",
+      "title": "Thêm bàn mới",
+      "data": "tableName=\"QA Bàn 330365\"",
+      "expected": "200, trạng thái AVAILABLE, có mã QR",
+      "actual": "HTTP 200 {\"data\":{\"status\":\"AVAILABLE\",\"id\":28,\"qrCodeUrl\":\"/home/index?tableId=28\",\"tableName\":\"QA Bàn 330365\"}}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-10",
+      "module": "Quản trị",
+      "title": "Đổi tên bàn trống",
+      "data": "id=28",
+      "expected": "200",
+      "actual": "HTTP 200 {\"data\":{\"status\":\"AVAILABLE\",\"id\":28,\"qrCodeUrl\":\"/home/index?tableId=28\",\"tableName\":\"QA Bàn 330365 (đổi tên)\"}}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-04",
+      "module": "Real-time",
+      "title": "Màn hình bếp nhận sự kiện khi admin thêm/đổi tên bàn",
+      "data": "Admin đổi tên bàn -> WS /ws/kitchen",
+      "expected": "Nhận TABLES_UPDATED, /api/kitchen/tables có tên mới",
+      "actual": "event=true name=QA Bàn 330365 (đổi tên)",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-05",
+      "module": "Real-time",
+      "title": "Trang admin khác nhận sự kiện khi bàn thay đổi",
+      "data": "Admin đổi tên bàn -> WS /ws/admin",
+      "expected": "Nhận TABLES_UPDATED",
+      "actual": "event=true",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-06",
+      "module": "Real-time",
+      "title": "Trang admin nhận sự kiện khi thực đơn thay đổi",
+      "data": "Admin thêm/sửa món -> WS /ws/admin",
+      "expected": "Nhận MENU_UPDATED",
+      "actual": "event=true",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-01",
+      "module": "Khách hàng",
+      "title": "Quét mã QR của bàn",
+      "data": "GET /menu?qr=/home/index?tableId=28",
+      "expected": "302 -> /home/index?qr=...",
+      "actual": "HTTP 302 -> /SmartDining/home/index?qr=%2Fhome%2Findex%3FtableId%3D28",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-02",
+      "module": "Khách hàng",
+      "title": "Trang thực đơn hiển thị món mới thêm",
+      "data": "GET /home/index?qr=...",
+      "expected": "200, có \"QA Món 330365\"",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-03",
+      "module": "Khách hàng",
+      "title": "Mã QR không hợp lệ",
+      "data": "qr=ma-qr-khong-ton-tai",
+      "expected": "404",
+      "actual": "HTTP 404",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-04",
+      "module": "Khách hàng",
+      "title": "Xem giỏ hàng khi chưa quét QR",
+      "data": "GET /api/order/get-cart (không có phiên)",
+      "expected": "401 \"Phien quet QR da het han\"",
+      "actual": "HTTP 401 {\"status\":\"error\",\"message\":\"Phien quet QR da het han\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-05",
+      "module": "Khách hàng",
+      "title": "Thêm món vào giỏ",
+      "data": "productId=P042, quantity=2, note=\"ít cay\"",
+      "expected": "200 success",
+      "actual": "HTTP 200 {\"status\":\"success\",\"message\":\"Da them vao gio\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-06",
+      "module": "Khách hàng",
+      "title": "Thêm món với số lượng 0",
+      "data": "quantity=0",
+      "expected": "400",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Mon an hoac so luong khong hop le\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-07",
+      "module": "Khách hàng",
+      "title": "Thêm món với số lượng âm",
+      "data": "quantity=-3",
+      "expected": "400",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Mon an hoac so luong khong hop le\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-08",
+      "module": "Khách hàng",
+      "title": "Thêm món không tồn tại",
+      "data": "productId=P_KHONG_CO",
+      "expected": "400",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Mon an hoac so luong khong hop le\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-09",
+      "module": "Khách hàng",
+      "title": "Xem giỏ hàng sau khi thêm 2 món",
+      "data": "GET /api/order/get-cart",
+      "expected": "200, có 2 món vừa thêm",
+      "actual": "HTTP 200 {\"items\":[{\"note\":\"ít cay\",\"productId\":\"P042\",\"price\":55000,\"qty\":2,\"na (items=2)",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-10",
+      "module": "Khách hàng",
+      "title": "Hủy món chưa gửi bếp",
+      "data": "orderDetailId=CT-b4a39eb4-ec72-42e2-99e7-2edd60422494 (P036)",
+      "expected": "200 success",
+      "actual": "HTTP 200 {\"status\":\"success\",\"message\":\"Da huy mon\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-18",
+      "module": "Khách hàng",
+      "title": "Tăng số lượng món trong giỏ",
+      "data": "orderDetailId=CT-67191bc3-f479-45bf-a222-f93b37f12c9e, quantity 2 -> 3",
+      "expected": "200, giỏ hàng có qty=3",
+      "actual": "HTTP 200 {\"status\":\"success\",\"message\":\"Da cap nhat so luong\"} qty=3",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-19",
+      "module": "Khách hàng",
+      "title": "Giảm số lượng món trong giỏ",
+      "data": "quantity 3 -> 2",
+      "expected": "200, giỏ hàng có qty=2",
+      "actual": "HTTP 200 {\"status\":\"success\",\"message\":\"Da cap nhat so luong\"} qty=2",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-20",
+      "module": "Khách hàng",
+      "title": "Giảm số lượng về 0",
+      "data": "quantity=0",
+      "expected": "400 (dùng \"Hủy món\" để bỏ món)",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Chi doi duoc so luong mon chua gui bep (1-100)\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-21",
+      "module": "Khách hàng",
+      "title": "Số lượng vượt giới hạn",
+      "data": "quantity=101",
+      "expected": "400",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Chi doi duoc so luong mon chua gui bep (1-100)\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-11",
+      "module": "Khách hàng",
+      "title": "Xác nhận gửi đơn xuống bếp",
+      "data": "POST /api/order/confirm",
+      "expected": "200 \"Don da duoc gui xuong bep\"",
+      "actual": "HTTP 200 {\"status\":\"success\",\"message\":\"Don da duoc gui xuong bep\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-22",
+      "module": "Khách hàng",
+      "title": "Đổi số lượng món đã gửi bếp",
+      "data": "orderDetailId=CT-67191bc3-f479-45bf-a222-f93b37f12c9e, quantity=5",
+      "expected": "400 \"Chi doi duoc so luong mon chua gui bep\"",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Chi doi duoc so luong mon chua gui bep (1-100)\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-17",
+      "module": "Quản trị",
+      "title": "Tổng quan: chi tiết \"Bàn đang phục vụ\"",
+      "data": "GET /api/admin/overview/details?type=open",
+      "expected": "200, có bàn test với 2 món đã gửi bếp",
+      "actual": "HTTP 200 {\"data\":[{\"amount\":215000,\"servedCount\":3,\"orderId\" sent=2",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-18",
+      "module": "Quản trị",
+      "title": "Tổng quan: loại chi tiết không hợp lệ",
+      "data": "type=khong-co",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Loại chi tiết không hợp lệ.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-12",
+      "module": "Khách hàng",
+      "title": "Xác nhận khi giỏ trống",
+      "data": "POST /api/order/confirm (lần 2)",
+      "expected": "400 \"Gio hang dang trong\"",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Gio hang dang trong\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-13",
+      "module": "Khách hàng",
+      "title": "Hủy món đã gửi bếp",
+      "data": "orderDetailId=CT-67191bc3-f479-45bf-a222-f93b37f12c9e",
+      "expected": "400 \"Chi co the huy mon chua gui bep\"",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Chi co the huy mon chua gui bep\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-14",
+      "module": "Khách hàng",
+      "title": "Gửi yêu cầu phục vụ",
+      "data": "type=\"Thêm nước lọc\", note=\"2 ly\"",
+      "expected": "200 success",
+      "actual": "HTTP 200 {\"status\":\"success\",\"message\":\"Da gui yeu cau toi nhan vien\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-15",
+      "module": "Khách hàng",
+      "title": "Gửi yêu cầu phục vụ rỗng",
+      "data": "type=\"\"",
+      "expected": "400",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Noi dung yeu cau khong hop le\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-BEP-01",
+      "module": "Bếp",
+      "title": "Món vừa gửi xuất hiện trên màn hình bếp",
+      "data": "GET /api/kitchen/tasks",
+      "expected": "200, có món CT-67191bc3-f479-45bf-a222-f93b37f12c9e trạng thái PENDING",
+      "actual": "HTTP 200 {\"status\":\"success\",\"data\":[{\"note\":\"Siêu cạy\",\"ord found=true status=PENDING",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-BEP-02",
+      "module": "Bếp",
+      "title": "Chuyển món sang Đang nấu",
+      "data": "status=PREPARING",
+      "expected": "200 success",
+      "actual": "HTTP 200 {\"status\":\"success\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-BEP-03",
+      "module": "Bếp",
+      "title": "Chuyển món sang Đã xong",
+      "data": "status=READY",
+      "expected": "200 success",
+      "actual": "HTTP 200 {\"status\":\"success\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-BEP-04",
+      "module": "Bếp",
+      "title": "Cập nhật trạng thái không hợp lệ",
+      "data": "status=KHONG_HOP_LE",
+      "expected": "400",
+      "actual": "HTTP 400 {\"status\":\"error\",\"message\":\"Du lieu khong hop le\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-TT-01",
+      "module": "Thanh toán",
+      "title": "Thanh toán khi khách chưa yêu cầu",
+      "data": "tableId=28, method=CASH",
+      "expected": "400 NOT_REQUESTED",
+      "actual": "HTTP 400 {\"code\":\"NOT_REQUESTED\",\"message\":\"Khach chua yeu cau thanh toan\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-TT-02",
+      "module": "Thanh toán",
+      "title": "Thanh toán khi còn món chưa phục vụ",
+      "data": "Khách đã yêu cầu, món đang ở trạng thái READY",
+      "expected": "400 ITEMS_NOT_SERVED",
+      "actual": "HTTP 400 {\"code\":\"ITEMS_NOT_SERVED\",\"message\":\"Con mon chua phuc vu, chua the thanh toan\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PV-01",
+      "module": "Phục vụ",
+      "title": "Xem chi tiết bàn có món đã xong",
+      "data": "tableId=28",
+      "expected": "200, món ở trạng thái READY",
+      "actual": "HTTP 200 {\"status\":\"success\",\"data\":{\"items\":[{\"unitPrice\":5 status=READY",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PV-02",
+      "module": "Phục vụ",
+      "title": "Đánh dấu đã mang món ra",
+      "data": "orderDetailId=CT-67191bc3-f479-45bf-a222-f93b37f12c9e",
+      "expected": "200 success",
+      "actual": "HTTP 200 {\"status\":\"success\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PV-03",
+      "module": "Phục vụ",
+      "title": "Đánh dấu phục vụ lại món đã phục vụ",
+      "data": "orderDetailId=CT-67191bc3-f479-45bf-a222-f93b37f12c9e (lần 2)",
+      "expected": "400",
+      "actual": "HTTP 400 {\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-16",
+      "module": "Khách hàng",
+      "title": "Gửi yêu cầu thanh toán",
+      "data": "POST /api/order/request-payment",
+      "expected": "200 success",
+      "actual": "HTTP 200 {\"status\":\"success\",\"message\":\"Da gui yeu cau thanh toan toi nhan vien\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PV-04",
+      "module": "Phục vụ",
+      "title": "Nhân viên thấy yêu cầu phục vụ và thanh toán của bàn",
+      "data": "GET /api/staff/requests",
+      "expected": "200, có 1 SERVICE + 1 PAYMENT",
+      "actual": "HTTP 200 {\"status\":\"success\",\"data\":[{\"s service=true payment=true",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PV-05",
+      "module": "Phục vụ",
+      "title": "Hoàn tất yêu cầu phục vụ",
+      "data": "requestId (SERVICE)",
+      "expected": "200 success",
+      "actual": "HTTP 200 {\"status\":\"success\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-TT-03",
+      "module": "Thanh toán",
+      "title": "Không thể chốt thanh toán bằng \"Đã xử lý\" yêu cầu",
+      "data": "complete-request với yêu cầu PAYMENT",
+      "expected": "400 (phải dùng màn hình Thanh toán)",
+      "actual": "HTTP 400 {\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-TT-04",
+      "module": "Thanh toán",
+      "title": "Xem hóa đơn chi tiết trước khi thanh toán",
+      "data": "GET /api/staff/bill?tableId=28",
+      "expected": "200, canPay=true, 1 dòng (SL 2 × đơn giá), tổng = 110000, có nhân viên phụ trách",
+      "actual": "HTTP 200 {\"status\":\"success\",\"data\":{\"ca canPay=true dong=1 sl=2 tong=110000 nv=Nhân viên 01",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-TT-05",
+      "module": "Thanh toán",
+      "title": "Chuyển khoản nhưng không có ảnh bill",
+      "data": "method=TRANSFER, image=null",
+      "expected": "400 IMAGE_REQUIRED",
+      "actual": "HTTP 400 {\"code\":\"IMAGE_REQUIRED\",\"message\":\"Chuyen khoan can anh chup bill\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-TT-06",
+      "module": "Thanh toán",
+      "title": "Chuyển khoản với ảnh không hợp lệ",
+      "data": "image=\"khong-phai-anh\"",
+      "expected": "400 INVALID_IMAGE",
+      "actual": "HTTP 400 {\"code\":\"INVALID_IMAGE\",\"message\":\"Anh bill khong hop le hoac qua lon (toi da 3MB)\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-TT-07",
+      "module": "Thanh toán",
+      "title": "Phương thức thanh toán không hợp lệ",
+      "data": "method=THE_TIN_DUNG",
+      "expected": "400 INVALID_METHOD",
+      "actual": "HTTP 400 {\"code\":\"INVALID_METHOD\",\"message\":\"Phuong thuc thanh toan khong hop le\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PV-06",
+      "module": "Phục vụ",
+      "title": "Thanh toán chuyển khoản kèm ảnh bill",
+      "data": "method=TRANSFER, image=(ảnh PNG)",
+      "expected": "200 success",
+      "actual": "HTTP 200 {\"code\":\"OK\",\"message\":\"Da thanh toan\",\"status\":\"success\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-TT-08",
+      "module": "Thanh toán",
+      "title": "Hóa đơn lưu phương thức, nhân viên và ảnh bill",
+      "data": "Admin: overview/details?type=paid + xem ảnh bill",
+      "expected": "method=TRANSFER, có tên nhân viên, ảnh bill đúng ảnh đã gửi",
+      "actual": "method=TRANSFER nv=Nhân viên 01 anh=true",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-PV-07",
+      "module": "Phục vụ",
+      "title": "Sau thanh toán bàn trở về Trống",
+      "data": "tableId=28",
+      "expected": "status=AVAILABLE",
+      "actual": "status=AVAILABLE",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-07",
+      "module": "Real-time",
+      "title": "Trang admin nhận sự kiện khi khách gửi đơn",
+      "data": "Bàn test 28 -> WS /ws/admin",
+      "expected": "Nhận ORDER_CONFIRMED của bàn 28",
+      "actual": "event={\"totalAmount\":110000,\"tableId\":28,\"status\":\"ORDER_CONFIRMED\",\"tableName\":\"QA Bàn 330365 (đổi tên)\",",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-08",
+      "module": "Real-time",
+      "title": "Trang admin nhận sự kiện khi khách yêu cầu phục vụ",
+      "data": "Bàn test 28 -> WS /ws/admin",
+      "expected": "Nhận SERVICE_REQUEST của bàn 28",
+      "actual": "event={\"note\":\"2 ly\",\"requestId\":\"REQ-8973a139-7a2c-4ebf-86e2-37fe92211a8b\",\"tableId\":28,\"type\":\"Thêm nước",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-09",
+      "module": "Real-time",
+      "title": "Trang admin nhận sự kiện khi khách yêu cầu thanh toán",
+      "data": "Bàn test 28 -> WS /ws/admin",
+      "expected": "Nhận PAYMENT_REQUEST của bàn 28",
+      "actual": "event={\"totalAmount\":110000,\"requestId\":\"REQ-2925a610-372d-47a5-8bcd-abf129927888\",\"tableId\":28,\"status\":\"",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-10",
+      "module": "Real-time",
+      "title": "Trang admin nhận sự kiện khi thanh toán xong",
+      "data": "Bàn test 28 -> WS /ws/admin",
+      "expected": "Nhận ORDER_PAID của bàn 28",
+      "actual": "event={\"status\":\"ORDER_PAID\",\"tableId\":28}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-11",
+      "module": "Real-time",
+      "title": "Trang admin nhận sự kiện khi trạng thái bàn đổi",
+      "data": "Bàn test 28 -> WS /ws/admin",
+      "expected": "Nhận TABLE_STATUS_UPDATED của bàn 28",
+      "actual": "event={\"tableId\":28,\"tableStatus\":\"FULL\",\"status\":\"TABLE_STATUS_UPDATED\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-12",
+      "module": "Real-time",
+      "title": "Doanh thu hôm nay tăng đúng bằng hóa đơn vừa thanh toán",
+      "data": "Tổng hóa đơn = 110000",
+      "expected": "todayRevenue tăng 110000, số hóa đơn +1",
+      "actual": "tăng 110000, hóa đơn 2 -> 3",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-13",
+      "module": "Real-time",
+      "title": "Tổng quan có số yêu cầu đang chờ xử lý",
+      "data": "GET /api/admin/overview",
+      "expected": "Có trường pendingRequests",
+      "actual": "pendingRequests=1",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-KH-17",
+      "module": "Khách hàng",
+      "title": "Giỏ hàng sau khi đã thanh toán",
+      "data": "GET /api/order/get-cart",
+      "expected": "200, không còn món",
+      "actual": "HTTP 200 {\"items\":[],\"totalAmount\":0,\"projectedTotal\":0,\"currentOrderTotal\":0,\"status\":\"success\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-01",
+      "module": "Mang về",
+      "title": "Nhân viên xem thực đơn để bán mang về",
+      "data": "GET /api/staff/menu",
+      "expected": "200, có món test kèm giá và danh mục",
+      "actual": "HTTP 200 {\"status\":\"success\",\"data\":[{\"price\":2000 found=true",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-02",
+      "module": "Mang về",
+      "title": "Tạo đơn mang về không có món",
+      "data": "items=[]",
+      "expected": "400 EMPTY",
+      "actual": "HTTP 400 {\"code\":\"EMPTY\",\"message\":\"Chua chon mon nao\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-03",
+      "module": "Mang về",
+      "title": "Số điện thoại không hợp lệ",
+      "data": "customerPhone=\"abc\"",
+      "expected": "400 INVALID_CUSTOMER",
+      "actual": "HTTP 400 {\"code\":\"INVALID_CUSTOMER\",\"message\":\"Ten hoac so dien thoai khong hop le\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-04",
+      "module": "Mang về",
+      "title": "Giờ lấy không hợp lệ",
+      "data": "pickupTime=\"25:99\"",
+      "expected": "400 INVALID_PICKUP_TIME",
+      "actual": "HTTP 400 {\"code\":\"INVALID_PICKUP_TIME\",\"message\":\"Gio lay do khong hop le (dinh dang HH:mm)\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-05",
+      "module": "Mang về",
+      "title": "Chuyển khoản không có ảnh bill",
+      "data": "method=TRANSFER, image=null",
+      "expected": "400 IMAGE_REQUIRED",
+      "actual": "HTTP 400 {\"code\":\"IMAGE_REQUIRED\",\"message\":\"Chuyen khoan can anh chup bill\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-06",
+      "module": "Mang về",
+      "title": "Số lượng món bằng 0",
+      "data": "quantity=0",
+      "expected": "400 INVALID_ITEM",
+      "actual": "HTTP 400 {\"code\":\"INVALID_ITEM\",\"message\":\"Mon hoac so luong khong hop le (mon phai dang ban, so luong 1-100)\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-07",
+      "module": "Mang về",
+      "title": "Tạo đơn mang về, thanh toán tiền mặt",
+      "data": "P042 × 2, khách \"QA Khách 330365\"",
+      "expected": "200, có mã lấy đồ, tổng = 110000",
+      "actual": "HTTP 200 {\"status\":\"success\",\"data\":{\"pickupCode\":1,\"total\":110000,\"orderId\":\"HD-e1e584ca-b7da-4cb0-bc20-f6addf9f4088\"}}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-08",
+      "module": "Mang về",
+      "title": "Món mang về xuống bếp ngay sau khi thanh toán",
+      "data": "GET /api/kitchen/tasks",
+      "expected": "có món của \"Mang về #1\", không có bàn",
+      "actual": "group=Mang về #1 type=TAKEAWAY tableId=null",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-09",
+      "module": "Mang về",
+      "title": "Giao đồ khi bếp chưa làm xong",
+      "data": "POST /api/staff/takeaway/deliver",
+      "expected": "400 NOT_READY",
+      "actual": "HTTP 400 {\"code\":\"NOT_READY\",\"message\":\"Bep chua lam xong tat ca mon\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-10",
+      "module": "Mang về",
+      "title": "Bếp làm xong thì đơn chuyển sang \"Chờ giao\"",
+      "data": "Bếp: PREPARING → READY",
+      "expected": "state=ready",
+      "actual": "state=ready",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-11",
+      "module": "Mang về",
+      "title": "Giao đồ cho khách",
+      "data": "POST /api/staff/takeaway/deliver",
+      "expected": "200, state=delivered",
+      "actual": "HTTP 200 {\"code\":\"OK\",\"message\":\"Da giao do cho khach\",\"status\":\"success\"} state=delivered",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-12",
+      "module": "Mang về",
+      "title": "Giao lại đơn đã giao",
+      "data": "deliver lần 2",
+      "expected": "400 ALREADY_DELIVERED",
+      "actual": "HTTP 400 {\"code\":\"ALREADY_DELIVERED\",\"message\":\"Don nay da giao roi\",\"status\":\"error\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-MV-13",
+      "module": "Mang về",
+      "title": "Doanh thu hôm nay có đơn mang về",
+      "data": "Admin: overview/details?type=paid",
+      "expected": "có \"Mang về #1\", phương thức CASH",
+      "actual": "tableName=Mang về #1 method=CASH",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-BC-01",
+      "module": "Báo cáo nhân viên",
+      "title": "Nhân viên phục vụ: hóa đơn, tiền thu, món mang ra",
+      "data": "staff-activity?from=2026-10-12&to=2026-10-12",
+      "expected": "staff1 có ≥ 2 hóa đơn, tiền thu > 0, ≥ 3 món đã mang ra, có yêu cầu đã xử lý",
+      "actual": "hd=4 tien=975000 mon=4 yc=6",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-BC-02",
+      "module": "Báo cáo nhân viên",
+      "title": "Nhân viên bếp: số món đã nấu và thời gian nấu",
+      "data": "staff-activity?from=2026-10-12&to=2026-10-12",
+      "expected": "kitchen1 có ≥ 4 món đã nấu (2 tại bàn + 2 mang về), có thời gian nấu TB",
+      "actual": "mon=4 nauTB=0",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-BC-03",
+      "module": "Báo cáo nhân viên",
+      "title": "Khoảng ngày không hợp lệ",
+      "data": "from > to",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Khoảng thời gian không hợp lệ.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-BC-04",
+      "module": "Báo cáo nhân viên",
+      "title": "Nhân viên phục vụ không xem được báo cáo",
+      "data": "staff1: GET /api/admin/staff-activity",
+      "expected": "403",
+      "actual": "HTTP 403",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-20",
+      "module": "Quản trị",
+      "title": "Thực đơn có số phần đã bán",
+      "data": "GET /api/admin/products",
+      "expected": "món test đã bán 4 phần (2 tại bàn + 2 mang về)",
+      "actual": "soldQuantity=4",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-11",
+      "module": "Quản trị",
+      "title": "Ngưng sử dụng bàn trống",
+      "data": "DELETE /api/admin/tables/28",
+      "expected": "200 deactivated",
+      "actual": "HTTP 200 {\"data\":{\"deactivated\":true}}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-12",
+      "module": "Quản trị",
+      "title": "Khách không vào được bàn đã ngưng",
+      "data": "GET /home/index?tableId=28",
+      "expected": "404",
+      "actual": "HTTP 404",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-19",
+      "module": "Quản trị",
+      "title": "Đổi tên bàn đang ngưng hoạt động",
+      "data": "id=28",
+      "expected": "200",
+      "actual": "HTTP 200 {\"data\":{\"status\":\"INACTIVE\",\"id\":28,\"qrCodeUrl\":\"/home/index?tableId=28\",\"tableName\":\"QA Bàn 330365 (bảo trì)\"}}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-13",
+      "module": "Quản trị",
+      "title": "Kích hoạt lại bàn",
+      "data": "POST /api/admin/tables/28/activate",
+      "expected": "200, status=AVAILABLE",
+      "actual": "HTTP 200 {\"data\":{\"status\":\"AVAILABLE\",\"id\":28,\"qrCodeUrl\":\"/home/index?tableId=28\",\"tableName\":\"QA Bàn 330365 (bảo trì)\"}}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-14",
+      "module": "Quản trị",
+      "title": "Xóa món đã có trong hóa đơn",
+      "data": "DELETE /api/admin/products/P042",
+      "expected": "200, archived=true (chuyển Ngưng kinh doanh)",
+      "actual": "HTTP 200 {\"data\":{\"archived\":true}}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AD-15",
+      "module": "Quản trị",
+      "title": "Xem báo cáo doanh thu",
+      "data": "GET /api/admin/reports",
+      "expected": "200, có revenue",
+      "actual": "HTTP 200 {\"data\":{\"revenue\":6220000,\"invoiceCount\":21,\"averageInvoice\":296190,\"dailyRevenue\":[{\"invo",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-01",
+      "module": "Tài khoản",
+      "title": "Tạo tài khoản không có email",
+      "data": "username=qa330365, email=\"\"",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Không thể tạo tài khoản. Kiểm tra tên đăng nhập, mật khẩu (ít nhất 8 ký tự) và email.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-02",
+      "module": "Tài khoản",
+      "title": "Tạo tài khoản email sai định dạng",
+      "data": "email=\"email-sai\"",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Không thể tạo tài khoản. Kiểm tra tên đăng nhập, mật khẩu (ít nhất 8 ký tự) và email.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-03",
+      "module": "Tài khoản",
+      "title": "Tạo tài khoản mật khẩu dưới 8 ký tự",
+      "data": "password=\"123\"",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Không thể tạo tài khoản. Kiểm tra tên đăng nhập, mật khẩu (ít nhất 8 ký tự) và email.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-04",
+      "module": "Tài khoản",
+      "title": "Tạo tài khoản hợp lệ",
+      "data": "username=qa330365, email=qa330365@example.com",
+      "expected": "200, status=PENDING",
+      "actual": "HTTP 200 {\"data\":{\"id\":\"NV000009\",\"username\":\"qa330365\",\"fullName\":\"QA Nhân viên 330365\",\"phone\":\"0900000000\",\"email\":\"qa330365@example.com\",\"role\":\"",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-05",
+      "module": "Tài khoản",
+      "title": "Tạo tài khoản trùng tên đăng nhập",
+      "data": "username=qa330365 (lần 2)",
+      "expected": "400",
+      "actual": "HTTP 400 {\"message\":\"Không thể tạo tài khoản. Kiểm tra tên đăng nhập, mật khẩu (ít nhất 8 ký tự) và email.\"}",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-06",
+      "module": "Tài khoản",
+      "title": "Lần đầu đăng nhập yêu cầu nhập mã xác thực",
+      "data": "qa330365 / Matkhau@123",
+      "expected": "200, trang \"Xác thực tài khoản\"",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-07",
+      "module": "Tài khoản",
+      "title": "Chưa xác thực thì không vào được trang làm việc",
+      "data": "GET /staff/dashboard",
+      "expected": "302 -> /login",
+      "actual": "HTTP 302 -> /SmartDining/login",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-08",
+      "module": "Tài khoản",
+      "title": "Nhập sai mã xác thực",
+      "data": "code=000000",
+      "expected": "200, báo \"Ma xac thuc khong dung. Con 4 lan thu\"",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-09",
+      "module": "Tài khoản",
+      "title": "Gửi lại mã ngay lập tức (chưa đủ 60 giây)",
+      "data": "POST /login/verify/resend",
+      "expected": "200, báo \"Vui long doi ... giay\"",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-10",
+      "module": "Tài khoản",
+      "title": "Nhập đúng mã xác thực",
+      "data": "code=(mã trong email / log DEV)",
+      "expected": "302 -> /staff/dashboard",
+      "actual": "HTTP 302 -> /SmartDining/staff/dashboard",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-11",
+      "module": "Tài khoản",
+      "title": "Sau khi xác thực tài khoản thành Đang hoạt động",
+      "data": "username=qa330365",
+      "expected": "status=ACTIVE",
+      "actual": "status=ACTIVE",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-12",
+      "module": "Tài khoản",
+      "title": "Nhân viên mới vào được trang làm việc",
+      "data": "GET /staff/dashboard",
+      "expected": "200",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-13",
+      "module": "Tài khoản",
+      "title": "Dùng lại mã sau khi đã xác thực",
+      "data": "POST /login/verify",
+      "expected": "302 -> /login (không còn phiên chờ xác thực)",
+      "actual": "HTTP 302 -> /SmartDining/login",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-14",
+      "module": "Tài khoản",
+      "title": "Nhập sai mã 5 lần",
+      "data": "code=999999 x5",
+      "expected": "200, báo \"nhap sai qua nhieu lan\"",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-15",
+      "module": "Tài khoản",
+      "title": "Nhập đúng mã sau khi đã sai 5 lần",
+      "data": "code=(mã đúng)",
+      "expected": "200, vẫn bị chặn, yêu cầu gửi lại mã",
+      "actual": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-NV-16",
+      "module": "Tài khoản",
+      "title": "Khóa tài khoản đang đăng nhập thì bị đăng xuất",
+      "data": "admin khóa qa330365",
+      "expected": "302 -> /login",
+      "actual": "khóa: HTTP 200 {\"data\":{\"id\":\"NV000009\",\"username\":\"qa330365\",\"fullName\":\"QA Nhân viên | vào lại: HTTP 302 -> /SmartDining/login",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-RT-14",
+      "module": "Real-time",
+      "title": "Trang admin nhận sự kiện khi nhân sự thay đổi",
+      "data": "Tạo tài khoản, xác thực email, khóa tài khoản",
+      "expected": "Nhận EMPLOYEE_UPDATED (ít nhất 4 lần)",
+      "actual": "số lần nhận=4",
+      "result": "PASS"
+    },
+    {
+      "id": "TC-AUTH-11",
+      "module": "Xác thực",
+      "title": "Đăng xuất rồi vào lại trang làm việc",
+      "data": "GET /logout -> GET /staff/dashboard",
+      "expected": "302 -> /login",
+      "actual": "HTTP 302 -> /SmartDining/login",
+      "result": "PASS"
+    }
+  ]
+}

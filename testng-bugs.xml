@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Kiem chung cac loi nghiem trong (chua sua). Chay: mvn test -Dtestng.suite=testng-bugs.xml -->
+<suite name="SmartDining - Loi nghiem trong" verbose="1" parallel="false">
+    <test name="Loi nghiem trong">
+        <classes>
+            <class name="com.smartdining.bugs.SeriousBugTest"/>
+        </classes>
+    </test>
+</suite>

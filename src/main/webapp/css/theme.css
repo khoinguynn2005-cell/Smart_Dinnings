@@ -1,0 +1,109 @@
+/*
+ * SmartDining - bang mau chung "Trang nga va xanh xo thom".
+ * Moi trang (khach, dang nhap, phuc vu, bep, admin) doc mau tu day; doi tong mau chi can sua file nay.
+ */
+:root {
+    /* Nen va be mat */
+    --sd-bg: #F7F7F2;
+    --sd-bg-soft: #E9EFE4;
+    --sd-header-bg: #E9EFE4;
+    --sd-surface: #FFFFFF;
+    --sd-surface-muted: #FBFBF7;
+    --sd-border: #E6E9E0;
+    --sd-border-strong: #D5DED0;
+
+    /* Chu */
+    --sd-text: #26302A;
+    --sd-text-soft: #4C5A4F;
+    --sd-text-muted: #6F7D72;
+    --sd-text-faint: #97A39A;
+
+    /* Mau nhan (nut chinh, muc dang chon) */
+    --sd-accent: #5E8C61;
+    --sd-accent-hover: #4C7650;
+    --sd-accent-soft: #E9EFE4;
+    --sd-accent-tint: #DCE8D6;
+    --sd-on-accent: #FFFFFF;
+    --sd-price: #3F6B45;
+
+    /* Trang thai */
+    --sd-success: #3F6B45;
+    --sd-success-soft: #E3ECDF;
+    --sd-success-text: #2F5535;
+    --sd-success-wash: #F3F8F1;
+    --sd-warning: #C8962E;
+    --sd-warning-soft: #F5EBD3;
+    --sd-warning-text: #7A5A15;
+    --sd-danger: #B9634A;
+    --sd-danger-soft: #F6E4DD;
+    --sd-danger-text: #8A3F2B;
+    --sd-danger-wash: #FDF6F3;
+    --sd-info-soft: #E6EEF2;
+    --sd-info-text: #3E5566;
+
+    /* Thanh ben trang quan tri (reu dam) */
+    --sd-sidebar-bg: #26302A;
+    --sd-sidebar-text: #C9D4C8;
+    --sd-sidebar-muted: #8E9C91;
+    --sd-sidebar-strong: #FFFFFF;
+    --sd-sidebar-active: #3A4A40;
+    --sd-sidebar-hover: #2F3B34;
+    --sd-sidebar-border: #34413A;
+    --sd-sidebar-accent: #A8CBA5;
+
+    /* Man hinh bep (nen reu toi) */
+    --kds-bg: #1C2420;
+    --kds-panel: #222B26;
+    --kds-card: #26302A;
+    --kds-border: #2F3A33;
+    --kds-border-strong: #3B4840;
+    --kds-text: #EAF0E6;
+    --kds-text-muted: #A3B0A6;
+    --kds-new: #A8CBA5;
+    --kds-cooking: #E8CF8F;
+    --kds-late: #F0A88C;
+
+    /* Chu, bo goc, bong */
+    --sd-font-sans: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
+    --sd-font-display: 'Be Vietnam Pro', 'Segoe UI', Arial, sans-serif;
+    --sd-radius-sm: 8px;
+    --sd-radius: 12px;
+    --sd-radius-lg: 16px;
+    --sd-radius-pill: 999px;
+    --sd-radius-button: 999px;
+    --sd-shadow-sm: 0 1px 2px rgba(38, 48, 42, .06);
+    --sd-shadow: 0 8px 24px rgba(38, 48, 42, .08);
+    --sd-shadow-lg: 0 20px 48px rgba(38, 48, 42, .14);
+    --sd-overlay: rgba(28, 36, 32, .42);
+    --sd-focus: 0 0 0 3px rgba(94, 140, 97, .25);
+}
+
+.sd-display {
+    font-family: var(--sd-font-display);
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+/* Nhan trang thai dung chung */
+.sd-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--sd-radius-pill);
+    font-size: .76rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.sd-pill--neutral { background: var(--sd-accent-soft); color: var(--sd-text-soft); }
+.sd-pill--success { background: var(--sd-success-soft); color: var(--sd-success-text); }
+.sd-pill--warning { background: var(--sd-warning-soft); color: var(--sd-warning-text); }
+.sd-pill--danger { background: var(--sd-danger-soft); color: var(--sd-danger-text); }
+.sd-pill--info { background: var(--sd-info-soft); color: var(--sd-info-text); }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}

@@ -1,0 +1,166 @@
+/* Man hinh bep (KDS) - nen toi am, chu to, de nhin tu xa. Mau lay tu css/theme.css */
+:root {
+    --primary: var(--sd-accent);
+    --info: var(--kds-cooking);
+    --success: var(--kds-new);
+    --danger: var(--kds-late);
+    --text-main: var(--kds-text);
+    --text-muted: var(--kds-text-muted);
+    --border: var(--kds-border);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--sd-font-sans); }
+html { scroll-behavior: smooth; }
+body { background: var(--kds-bg); color: var(--kds-text); display: flex; flex-direction: column; min-height: 100vh; overflow: hidden; line-height: 1.5; }
+button { font: inherit; color: inherit; }
+
+/* Thanh tren */
+.header { background: var(--kds-panel); padding: 14px 22px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--kds-border); flex-shrink: 0; position: sticky; top: 0; z-index: 200; }
+.header h1 { color: var(--kds-text); font-size: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+.header h1 i { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--sd-accent); color: var(--sd-on-accent); font-size: .95rem; }
+.user-info { display: flex; align-items: center; gap: 14px; color: var(--kds-text-muted); font-size: .95rem; }
+.kds-clock { font-variant-numeric: tabular-nums; color: var(--kds-text); font-weight: 600; }
+.logout-btn { background: transparent; color: var(--kds-text-muted); border: 1px solid var(--kds-border-strong); padding: 7px 16px; border-radius: var(--sd-radius-pill); text-decoration: none; transition: background .2s ease, color .2s ease; font-size: .9rem; }
+.logout-btn:hover { background: var(--kds-card); color: var(--kds-text); }
+
+.layout-container { display: flex; flex: 1; overflow: hidden; }
+
+/* Cot danh sach ban */
+.sidebar { width: 312px; background: var(--kds-panel); border-right: 1px solid var(--kds-border); display: flex; flex-direction: column; transition: width .22s ease; }
+.kitchen-sidebar-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 18px 14px; border-bottom: 1px solid var(--kds-border); }
+.kitchen-sidebar-title { display: flex; align-items: center; gap: 10px; min-width: 0; color: var(--kds-text); font-size: .95rem; font-weight: 600; }
+.kitchen-sidebar-title i { color: var(--kds-cooking); }
+.sidebar-collapse { width: 34px; height: 34px; display: grid; place-items: center; flex: 0 0 auto; border: 1px solid var(--kds-border-strong); border-radius: 10px; background: transparent; color: var(--kds-text-muted); cursor: pointer; transition: transform .2s ease, color .2s ease; }
+.sidebar-collapse:hover { color: var(--kds-text); }
+.sidebar-scroll { flex: 1; overflow-y: auto; padding: 16px; }
+.sidebar-scroll::-webkit-scrollbar { width: 6px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: var(--kds-border-strong); border-radius: 3px; }
+.tier-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--kds-text-muted); font-size: .8rem; font-weight: 600; margin: 22px 0 12px; }
+.tier-title-active { margin-top: 0; color: var(--kds-cooking); }
+.tier-title:first-child { margin-top: 0; }
+.tier-count { display: inline-grid; min-width: 24px; height: 24px; place-items: center; padding: 0 8px; border-radius: var(--sd-radius-pill); background: var(--kds-card); color: var(--kds-cooking); font-size: .75rem; font-weight: 700; }
+.tier-count-muted { color: var(--kds-text-muted); }
+.sidebar-divider { display: flex; align-items: center; gap: 10px; margin: 20px 2px 0; color: var(--kds-border-strong); }
+.sidebar-divider span { height: 1px; flex: 1; background: var(--kds-border); }
+.sidebar-divider i { font-size: .67rem; }
+.sidebar-empty-state { padding: 10px 4px; color: var(--kds-text-muted); font-size: .88rem; line-height: 1.45; }
+
+.table-item { background: var(--kds-card); border: 1px solid transparent; border-radius: var(--sd-radius); padding: 12px 14px; margin-bottom: 8px; cursor: pointer; display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; color: var(--kds-text); text-align: left; transition: border-color .2s ease, background .2s ease; }
+.table-item:hover:not(.disabled) { border-color: var(--kds-border-strong); }
+.table-item.active-select { border-color: var(--kds-cooking); background: color-mix(in srgb, var(--kds-cooking) 10%, var(--kds-card)); }
+.table-item.new-order-alert { border-color: var(--kds-late); box-shadow: inset 4px 0 0 var(--kds-late); animation: new-order-pulse 1.6s ease-in-out infinite; }
+.table-item.new-order-alert .table-icon { background: color-mix(in srgb, var(--kds-late) 14%, transparent); color: var(--kds-late); }
+.table-item.new-order-alert.active-select { border-color: var(--kds-late); }
+@keyframes new-order-pulse { 50% { box-shadow: inset 4px 0 0 var(--kds-late), 0 0 0 4px color-mix(in srgb, var(--kds-late) 8%, transparent); } }
+@media (prefers-reduced-motion: reduce) { .table-item.new-order-alert { animation: none; } }
+.table-item.disabled { opacity: .55; cursor: not-allowed; background: transparent; border: 1px dashed var(--kds-border); }
+.table-item:focus-visible, .sidebar-collapse:focus-visible, .btn:focus-visible { outline: 3px solid color-mix(in srgb, var(--kds-cooking) 45%, transparent); outline-offset: 2px; }
+.table-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.table-icon { width: 38px; height: 38px; flex: none; border-radius: 10px; background: color-mix(in srgb, var(--kds-cooking) 12%, transparent); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--kds-cooking); }
+.table-name { font-weight: 600; font-size: 1rem; }
+.table-badge { background: var(--kds-late); color: var(--kds-bg); padding: 3px 10px; border-radius: var(--sd-radius-pill); font-size: .76rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
+.table-badge.is-cooking { background: var(--kds-cooking); }
+
+/* Vung mon an */
+.main-content { flex: 1; display: flex; flex-direction: column; background: var(--kds-bg); min-width: 0; }
+body.sidebar-collapsed .sidebar { width: 80px; }
+body.sidebar-collapsed .kitchen-sidebar-heading { justify-content: center; padding: 18px 10px 14px; }
+body.sidebar-collapsed .kitchen-sidebar-title, body.sidebar-collapsed .tier-title, body.sidebar-collapsed .table-name, body.sidebar-collapsed .table-badge { display: none; }
+body.sidebar-collapsed .sidebar-collapse { transform: rotate(180deg); }
+body.sidebar-collapsed .sidebar-scroll { padding: 14px 10px; }
+body.sidebar-collapsed .table-item { justify-content: center; padding: 11px; }
+body.sidebar-collapsed .table-info { gap: 0; }
+
+.main-header { padding: 20px 28px; border-bottom: 1px solid var(--kds-border); display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.main-header h2 { font-family: var(--sd-font-display); font-size: 1.7rem; font-weight: 600; color: var(--kds-text); }
+.main-header .table-status { color: var(--kds-text-muted); font-size: .96rem; }
+
+.tasks-container { flex: 1; padding: 24px 28px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; align-content: start; }
+.tasks-container::-webkit-scrollbar { width: 8px; }
+.tasks-container::-webkit-scrollbar-thumb { background: var(--kds-border-strong); border-radius: 4px; }
+
+/* The mon: vien tren doi mau theo thoi gian cho */
+.task-card { background: var(--kds-card); border: 1px solid var(--kds-border); border-top: 4px solid var(--kds-new); border-radius: 16px; padding: 18px; position: relative; }
+.task-card.age-warm { border-top-color: var(--kds-cooking); }
+.task-card.age-late { border-top-color: var(--kds-late); }
+.task-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; font-size: .9rem; color: var(--kds-text-muted); }
+.task-age { font-weight: 700; font-size: 1rem; font-variant-numeric: tabular-nums; color: var(--kds-new); }
+.age-warm .task-age { color: var(--kds-cooking); }
+.age-late .task-age { color: var(--kds-late); }
+.task-state { padding: 3px 10px; border-radius: var(--sd-radius-pill); background: color-mix(in srgb, var(--kds-new) 14%, transparent); color: var(--kds-new); font-size: .78rem; font-weight: 600; }
+.status-preparing .task-state { background: color-mix(in srgb, var(--kds-cooking) 14%, transparent); color: var(--kds-cooking); }
+.task-name { font-size: 1.3rem; font-weight: 600; line-height: 1.3; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.task-qty { color: var(--kds-cooking); font-size: 1.5rem; font-weight: 700; white-space: nowrap; }
+.task-note { background: color-mix(in srgb, var(--kds-cooking) 10%, transparent); color: var(--kds-cooking); padding: 10px 12px; border-radius: var(--sd-radius); font-size: .95rem; line-height: 1.5; margin-bottom: 4px; }
+.task-actions { display: flex; gap: 8px; margin-top: 14px; }
+
+.btn { flex: 1; min-height: 52px; padding: 12px; border: none; border-radius: var(--sd-radius); font-weight: 700; font-size: 1rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: filter .15s ease, transform .1s ease; }
+.btn:hover { filter: brightness(1.08); }
+.btn:active { transform: scale(.98); }
+.btn:disabled { opacity: .6; cursor: progress; }
+.btn-start { background: var(--kds-new); color: var(--kds-bg); }
+.btn-finish { background: var(--kds-cooking); color: var(--kds-bg); }
+.btn-cancel { flex: 0 0 auto; padding: 12px 16px; background: transparent; color: var(--kds-text-muted); border: 1px solid var(--kds-border-strong); }
+.btn-cancel:hover { color: var(--kds-late); border-color: var(--kds-late); filter: none; }
+
+.empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 24px; color: var(--kds-text-muted); display: flex; flex-direction: column; align-items: center; gap: 16px; border-radius: 16px; border: 1px dashed var(--kds-border-strong); }
+.empty-state i { font-size: 3.6rem; color: var(--kds-border-strong); }
+.empty-state i.is-done { color: var(--kds-new); opacity: .6; }
+
+@media (max-width: 960px) {
+    .layout-container { flex-direction: column; }
+    .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--kds-border); max-height: 40vh; }
+    body.sidebar-collapsed .sidebar { width: 100%; }
+    body.sidebar-collapsed .kitchen-sidebar-heading { justify-content: space-between; padding: 14px 16px; }
+    body.sidebar-collapsed .kitchen-sidebar-title, body.sidebar-collapsed .tier-title { display: flex; }
+    body.sidebar-collapsed .table-name, body.sidebar-collapsed .table-badge { display: initial; }
+    body.sidebar-collapsed .sidebar-collapse { transform: none; }
+    body.sidebar-collapsed .sidebar-scroll { padding: 16px; }
+    body.sidebar-collapsed .table-item { justify-content: space-between; padding: 12px 14px; }
+    body.sidebar-collapsed .table-info { gap: 12px; }
+    .tasks-container { padding: 16px 18px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .header { padding: 12px 16px; }
+    .main-header { padding: 16px 18px; flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+
+@media (max-width: 640px) {
+    .header h1 { font-size: 1.05rem; }
+    .user-info span:not(.kds-clock) { display: none; }
+    .tasks-container { grid-template-columns: 1fr; padding: 14px 14px 24px; }
+    .task-card { padding: 16px; }
+}
+
+/* Thanh chon nhom (ban / mang ve) + tab trang thai */
+.kds-toolbar { display: flex; flex-direction: column; gap: 10px; padding: 12px 28px 0; }
+.group-chips { display: none; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.group-chips::-webkit-scrollbar { display: none; }
+.group-chip { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border: 1px solid var(--kds-border-strong); border-radius: var(--sd-radius-pill); background: var(--kds-card); color: var(--kds-text); font-size: .88rem; font-weight: 600; cursor: pointer; }
+.group-chip span { color: var(--kds-text-muted); font-weight: 700; }
+.group-chip.is-late { color: var(--kds-late); }
+.group-chip.is-active { background: var(--kds-text); border-color: var(--kds-text); color: var(--kds-bg); }
+.group-chip.is-active span { color: var(--kds-bg); }
+.status-tabs { display: flex; gap: 18px; border-bottom: 1px solid var(--kds-border); }
+.status-tabs button { padding: 8px 0 10px; border: 0; border-bottom: 3px solid transparent; background: none; color: var(--kds-text-muted); font-weight: 600; cursor: pointer; }
+.status-tabs button span { margin-left: 4px; color: var(--kds-text-muted); font-weight: 700; }
+.status-tabs button.is-active { color: var(--kds-text); border-bottom-color: var(--kds-new); }
+.task-group { margin: -4px 0 8px; color: var(--kds-text-muted); font-size: .9rem; font-weight: 600; }
+.task-group.is-takeaway { color: var(--kds-cooking); }
+
+/* Dien thoai: bo cot ban, dung thanh chon nhom cuon ngang; nut bam lon cho tay uot */
+@media (max-width: 640px) {
+    body { overflow: auto; }
+    .layout-container { overflow: visible; }
+    .sidebar { display: none; }
+    .main-header { padding: 12px 14px 4px; flex-direction: row; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 0; }
+    .main-header h2 { font-size: 1.25rem; }
+    .main-header .table-status { font-size: .85rem; }
+    .kds-toolbar { position: sticky; top: 0; z-index: 5; padding: 6px 14px 0; background: var(--kds-bg); }
+    .group-chips { display: flex; }
+    .tasks-container { padding: 12px 14px 28px; gap: 10px; overflow: visible; }
+    .task-card { padding: 14px; border-top: 0; border-left: 5px solid var(--kds-new); border-radius: 0 14px 14px 0; }
+    .task-card.age-warm { border-left-color: var(--kds-cooking); }
+    .task-card.age-late { border-left-color: var(--kds-late); }
+    .task-name { font-size: 1.15rem; }
+    .btn { min-height: 48px; }
+    .header { position: static; }
+}

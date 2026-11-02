@@ -1,0 +1,199 @@
+/* Trang dang nhap va xac thuc email - mau lay tu css/theme.css */
+* { box-sizing: border-box; margin: 0; }
+
+body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px 16px;
+    background: var(--sd-bg);
+    color: var(--sd-text);
+    font-family: var(--sd-font-sans);
+    line-height: 1.5;
+}
+
+button, input { font: inherit; color: inherit; }
+
+.auth-card {
+    width: min(100%, 400px);
+    padding: 32px 28px 28px;
+    border: 1px solid var(--sd-border);
+    border-radius: 20px;
+    background: var(--sd-surface);
+    box-shadow: var(--sd-shadow);
+}
+
+.auth-mark {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--sd-accent);
+    color: var(--sd-on-accent);
+    font-size: 1.25rem;
+}
+
+.auth-mark.is-success {
+    background: var(--sd-success-soft);
+    color: var(--sd-success);
+}
+
+.auth-brand {
+    margin-top: 14px;
+    color: var(--sd-text-muted);
+    font-size: .85rem;
+}
+
+.auth-title {
+    margin-top: 2px;
+    font-family: var(--sd-font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+.auth-subtitle {
+    margin: 4px 0 20px;
+    color: var(--sd-text-muted);
+    font-size: .92rem;
+}
+
+.notice {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    border-radius: var(--sd-radius);
+    background: var(--sd-accent-soft);
+    color: var(--sd-text-soft);
+    font-size: .88rem;
+}
+
+.notice i { margin-top: 3px; color: var(--sd-accent); }
+.notice strong { display: block; color: var(--sd-text); font-weight: 600; }
+
+.notice-list { margin-bottom: 20px; }
+
+.error-msg, .success-msg {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding: 11px 14px;
+    border-radius: var(--sd-radius);
+    font-size: .9rem;
+}
+
+.error-msg { background: var(--sd-danger-soft); color: var(--sd-danger-text); }
+.success-msg { background: var(--sd-success-soft); color: var(--sd-success-text); }
+.error-msg i, .success-msg i { margin-top: 3px; }
+
+.input-group { margin-bottom: 14px; }
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--sd-text-soft);
+    font-size: .88rem;
+    font-weight: 500;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--sd-border-strong);
+    border-radius: var(--sd-radius);
+    outline: 0;
+    background: var(--sd-surface-muted);
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.input-field:focus {
+    border-color: var(--sd-accent);
+    box-shadow: var(--sd-focus);
+    background: var(--sd-surface);
+}
+
+.login-btn {
+    width: 100%;
+    margin-top: 6px;
+    padding: 13px;
+    border: 0;
+    border-radius: var(--sd-radius-button);
+    background: var(--sd-accent);
+    color: var(--sd-on-accent);
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: background .2s ease;
+}
+
+.login-btn:hover { background: var(--sd-accent-hover); }
+.login-btn:focus-visible { outline: 0; box-shadow: var(--sd-focus); }
+
+/* O nhap ma 6 so */
+.code-boxes {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.code-box {
+    width: 100%;
+    aspect-ratio: 1 / 1.15;
+    padding: 0;
+    border: 1px solid var(--sd-border-strong);
+    border-radius: var(--sd-radius);
+    background: var(--sd-surface-muted);
+    text-align: center;
+    font-size: 1.35rem;
+    font-weight: 600;
+    outline: 0;
+}
+
+.code-box:focus {
+    border-color: var(--sd-accent);
+    box-shadow: var(--sd-focus);
+    background: var(--sd-surface);
+}
+
+.code-field {
+    letter-spacing: 8px;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.code-meta {
+    margin: 10px 0 4px;
+    color: var(--sd-text-muted);
+    font-size: .85rem;
+}
+
+.code-meta.is-expired { color: var(--sd-danger-text); }
+
+.link-btn {
+    margin-top: 12px;
+    width: 100%;
+    padding: 8px;
+    border: 0;
+    background: none;
+    color: var(--sd-accent);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.link-btn:disabled { color: var(--sd-text-faint); cursor: default; }
+
+.auth-footer {
+    margin-top: 16px;
+    text-align: center;
+    font-size: .85rem;
+}
+
+.auth-footer a { color: var(--sd-text-muted); text-decoration: none; }
+.auth-footer a:hover { color: var(--sd-text); }

@@ -1,0 +1,865 @@
+/* Trang goi mon cua khach - mau lay tu css/theme.css */
+:root {
+    --primary: var(--sd-accent);
+    --text-main: var(--sd-text);
+    --text-muted: var(--sd-text-muted);
+    --border: var(--sd-border);
+    --danger: var(--sd-danger);
+    --success: var(--sd-success);
+    --font-sans: var(--sd-font-sans);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--sd-bg);
+    color: var(--sd-text);
+    min-height: 100vh;
+    padding-bottom: 120px;
+    line-height: 1.5;
+}
+
+button, select, textarea {
+    font: inherit;
+    color: inherit;
+}
+
+button:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: none;
+    box-shadow: var(--sd-focus);
+}
+
+/* ---------- Nut ---------- */
+.primary-btn {
+    background: var(--sd-accent);
+    color: var(--sd-on-accent);
+    border: none;
+    padding: 14px 22px;
+    border-radius: var(--sd-radius-button);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background .2s ease, transform .15s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.primary-btn:hover {
+    background: var(--sd-accent-hover);
+}
+
+.primary-btn:active {
+    transform: scale(.98);
+}
+
+.secondary-btn {
+    background: var(--sd-surface);
+    color: var(--sd-text-soft);
+    border: 1px solid var(--sd-border-strong);
+    padding: 12px 14px;
+    border-radius: var(--sd-radius-button);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: background .2s ease, border-color .2s ease;
+}
+
+.secondary-btn:hover {
+    background: var(--sd-accent-soft);
+    border-color: var(--sd-accent-soft);
+}
+
+/* ---------- Header ---------- */
+.glass-effect {
+    background: var(--sd-header-bg);
+}
+
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 18px 22px 12px;
+    background: var(--sd-header-bg);
+    border-bottom: 1px solid var(--sd-border);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.brand-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--sd-text-muted);
+    font-size: .85rem;
+}
+
+.brand-eyebrow i {
+    color: var(--sd-accent);
+}
+
+.brand h1 {
+    font-family: var(--sd-font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--sd-text);
+    letter-spacing: -.01em;
+    margin-top: 2px;
+}
+
+.brand p {
+    font-size: .9rem;
+    color: var(--sd-text-muted);
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.icon-btn {
+    position: relative;
+    background: var(--sd-surface);
+    border: none;
+    color: var(--sd-accent);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 1.05rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background .2s ease;
+}
+
+.icon-btn:hover {
+    background: var(--sd-accent-tint);
+}
+
+.category-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+}
+
+.category-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.cat-btn {
+    background: var(--sd-surface);
+    color: var(--sd-text-soft);
+    border: 1px solid transparent;
+    padding: 8px 16px;
+    border-radius: var(--sd-radius-pill);
+    white-space: nowrap;
+    font-size: .9rem;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+}
+
+.cat-btn:hover {
+    background: var(--sd-accent-tint);
+}
+
+.cat-btn.active {
+    background: var(--sd-accent);
+    color: var(--sd-on-accent);
+    font-weight: 600;
+}
+
+/* ---------- Danh sach mon ---------- */
+.main-content {
+    padding: 20px 22px 22px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 16px;
+}
+
+.empty-menu {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--sd-text-muted);
+    padding: 48px 0;
+}
+
+.product-card {
+    background: var(--sd-surface);
+    border-radius: var(--sd-radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--sd-border);
+    display: flex;
+    flex-direction: column;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.product-card:hover {
+    border-color: var(--sd-border-strong);
+    box-shadow: var(--sd-shadow);
+}
+
+.product-image {
+    height: 160px;
+    background-color: var(--sd-accent-tint);
+    background-size: cover;
+    background-position: center;
+}
+
+.product-image.is-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sd-accent);
+    font-size: 2.4rem;
+}
+
+.product-info {
+    padding: 14px 16px 16px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.product-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+    line-height: 1.35;
+    color: var(--sd-text);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.desc {
+    font-size: .85rem;
+    color: var(--sd-text-muted);
+    margin: 0 0 12px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.price {
+    font-weight: 700;
+    color: var(--sd-price);
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.add-btn {
+    background: var(--sd-accent);
+    color: var(--sd-on-accent);
+    border: none;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background .2s ease, transform .15s ease;
+}
+
+.add-btn:hover {
+    background: var(--sd-accent-hover);
+}
+
+.add-btn:active {
+    transform: scale(.94);
+}
+
+/* ---------- Thanh gio hang noi ---------- */
+.floating-cart {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    width: min(560px, calc(100% - 36px));
+    transform: translateX(-50%);
+    border-radius: var(--sd-radius-pill);
+    padding: 10px 10px 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    box-shadow: var(--sd-shadow-lg);
+    z-index: 90;
+    background: var(--sd-accent);
+    color: var(--sd-on-accent);
+    border: none;
+    transition: transform .24s ease, opacity .2s ease;
+}
+
+.cart-open .floating-cart {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, calc(100% + 42px));
+}
+
+.cart-summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.cart-icon-wrapper {
+    position: relative;
+    font-size: 1.3rem;
+    color: var(--sd-on-accent);
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: var(--sd-surface);
+    color: var(--sd-accent);
+    font-size: .7rem;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--sd-radius-pill);
+}
+
+.cart-total {
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-total .label {
+    font-size: .78rem;
+    color: rgba(255, 255, 255, .78);
+}
+
+.cart-total .amount {
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.view-cart-btn {
+    background: rgba(255, 255, 255, .18);
+    border: none;
+    color: var(--sd-on-accent);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 18px;
+    border-radius: var(--sd-radius-button);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* ---------- Modal chon so luong / goi nhan vien ---------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--sd-overlay);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background: var(--sd-bg);
+    width: 100%;
+    max-width: 560px;
+    border-radius: 24px 24px 0 0;
+    padding: 24px;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.25, .8, .25, 1);
+    box-shadow: var(--sd-shadow-lg);
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.modal-header h2,
+.cart-header h2 {
+    font-family: var(--sd-font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: var(--sd-accent-soft);
+    border: none;
+    color: var(--sd-text-soft);
+    width: 38px;
+    height: 38px;
+    flex: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    background: var(--sd-accent-tint);
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 18px;
+    background: var(--sd-surface);
+    border: 1px solid var(--sd-border);
+    padding: 14px;
+    border-radius: var(--sd-radius-lg);
+}
+
+.qty-btn {
+    background: var(--sd-accent-soft);
+    border: none;
+    color: var(--sd-accent);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 1.05rem;
+    cursor: pointer;
+}
+
+.qty-btn:hover {
+    background: var(--sd-accent-tint);
+}
+
+#modalQuantity {
+    font-size: 1.6rem;
+    font-weight: 700;
+    width: 42px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.note-input label {
+    display: block;
+    color: var(--sd-text-soft);
+    font-size: .9rem;
+    font-weight: 500;
+}
+
+.note-input textarea,
+.note-input select {
+    width: 100%;
+    background: var(--sd-surface);
+    border: 1px solid var(--sd-border-strong);
+    color: var(--sd-text);
+    border-radius: var(--sd-radius);
+    padding: 12px 14px;
+    margin-top: 6px;
+    margin-bottom: 18px;
+}
+
+.note-input textarea {
+    min-height: 104px;
+    resize: none;
+}
+
+.note-input textarea::placeholder {
+    color: var(--sd-text-faint);
+}
+
+/* ---------- Gio hang ---------- */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 440px;
+    background: var(--sd-bg);
+    z-index: 1001;
+    transform: translateX(100%);
+    transition: transform .3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--sd-shadow-lg);
+}
+
+.cart-sidebar.active {
+    transform: translateX(0);
+}
+
+.cart-header {
+    padding: 22px 22px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 22px 20px;
+}
+
+.cart-group-title {
+    margin: 14px 0 8px;
+    color: var(--sd-text-muted);
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.cart-item {
+    background: var(--sd-surface);
+    border: 1px solid var(--sd-border);
+    padding: 12px 14px;
+    border-radius: var(--sd-radius);
+    margin-bottom: 8px;
+}
+
+.cart-item-served {
+    opacity: .6;
+}
+
+.cart-item-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.cart-item-name {
+    font-weight: 600;
+}
+
+.cart-item-price {
+    color: var(--sd-price);
+    font-weight: 600;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.cart-item-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.cart-qty {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px;
+    border-radius: var(--sd-radius-pill);
+    background: var(--sd-accent-soft);
+}
+
+.cart-qty-btn {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: var(--sd-surface);
+    color: var(--sd-accent);
+    font-size: .75rem;
+    cursor: pointer;
+}
+
+.cart-qty-btn:hover:not(:disabled) {
+    background: var(--sd-accent);
+    color: var(--sd-on-accent);
+}
+
+.cart-qty-btn:disabled {
+    color: var(--sd-text-faint);
+    cursor: default;
+}
+
+.cart-qty-value {
+    min-width: 22px;
+    text-align: center;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.cart-item-note {
+    color: var(--sd-text-muted);
+    font-size: .82rem;
+}
+
+.cart-remove-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--sd-danger);
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cart-remove-btn:hover {
+    text-decoration: underline;
+}
+
+.empty-cart {
+    text-align: center;
+    color: var(--sd-text-muted);
+    margin-top: 40px;
+    line-height: 1.7;
+}
+
+.cart-footer {
+    padding: 18px 22px 22px;
+    border-top: 1px solid var(--sd-border);
+    background: var(--sd-surface-muted);
+}
+
+.cart-totals {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.amount-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    padding: 8px 0;
+}
+
+.cart-totals:not(.has-projected) .amount-detail {
+    grid-column: 1 / -1;
+}
+
+.amount-label {
+    color: var(--sd-text-muted);
+    font-size: .8rem;
+}
+
+.amount-value {
+    color: var(--sd-text);
+    font-size: 1.05rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.current-order-row .amount-value {
+    color: var(--sd-price);
+}
+
+.projected-total-row .amount-value {
+    color: var(--sd-success-text);
+}
+
+.is-hidden {
+    display: none;
+}
+
+.cart-footer .total-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    column-gap: 14px;
+    padding-top: 10px;
+    margin-bottom: 16px;
+    border-top: 1px dashed var(--sd-border-strong);
+}
+
+.cart-footer .total-label {
+    color: var(--sd-text-soft);
+    font-size: .9rem;
+    font-weight: 600;
+}
+
+.cart-footer .total-amount {
+    color: var(--sd-text);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.cart-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.cart-actions .primary-btn {
+    grid-column: 1 / -1;
+}
+
+/* ---------- Thong bao ---------- */
+.customer-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    z-index: 1200;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: min(430px, calc(100vw - 32px));
+    padding: 14px 16px;
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius);
+    background: var(--sd-surface);
+    color: var(--sd-text);
+    box-shadow: var(--sd-shadow-lg);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -18px);
+    transition: opacity .2s ease, transform .2s ease;
+}
+
+.customer-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.customer-toast i {
+    margin-top: 2px;
+    color: var(--sd-accent);
+}
+
+.customer-toast span {
+    font-size: .9rem;
+    font-weight: 500;
+    line-height: 1.45;
+}
+
+/* ---------- Dien thoai: the mon dang hang ngang ---------- */
+@media (max-width: 640px) {
+    body {
+        padding-bottom: 110px;
+    }
+
+    .app-header {
+        padding: 14px 16px 10px;
+    }
+
+    .header-content {
+        margin-bottom: 10px;
+    }
+
+    .brand h1 {
+        font-size: 1.35rem;
+    }
+
+    .main-content {
+        padding: 14px 16px;
+    }
+
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .product-card {
+        flex-direction: row;
+        align-items: stretch;
+        border-radius: var(--sd-radius-lg);
+    }
+
+    .product-image {
+        width: 96px;
+        height: auto;
+        min-height: 96px;
+        flex: none;
+        margin: 10px 0 10px 10px;
+        border-radius: var(--sd-radius);
+    }
+
+    .product-image.is-placeholder {
+        font-size: 1.8rem;
+    }
+
+    .product-info {
+        padding: 10px 12px;
+        min-width: 0;
+    }
+
+    .desc {
+        margin-bottom: 6px;
+        -webkit-line-clamp: 1;
+    }
+
+    .floating-cart {
+        bottom: 12px;
+        width: calc(100% - 24px);
+        padding: 8px 8px 8px 16px;
+    }
+
+    .cart-sidebar {
+        max-width: 100%;
+    }
+}

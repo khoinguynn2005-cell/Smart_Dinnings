@@ -1,0 +1,8 @@
+target/
+.settings/
+.classpath
+.project
+
+config.properties
+.idea/
+.smarttomcat/
